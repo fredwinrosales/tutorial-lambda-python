@@ -1,0 +1,9 @@
+services:
+  hello-lambda:
+    build: .
+    image: hello-world-lambda:latest
+    ports:
+      - "9000:8080"   # 8080 interno de la imagen Lambda -> 9000 local
+    # Si quisieras variables de entorno para tu función:
+    # environment:
+    #   LOG_LEVEL: info
