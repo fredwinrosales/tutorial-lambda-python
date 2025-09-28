@@ -67,6 +67,8 @@ Autenticarse contra ECR:
 ```bash
 aws ecr get-login-password --region REGION --profile PROFILE \
 | docker login --username AWS --password-stdin ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com
+```bash
+aws ecr create-repository --repository-name hello-world-lambda --profile PROFILE
 ```
 
 Etiquetar y subir:
