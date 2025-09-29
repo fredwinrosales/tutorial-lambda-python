@@ -29,13 +29,23 @@ aws iam create-role \
   --assume-role-policy-document file://trust.json --profile PROFILE
 ```
 
-
 Adjuntar la política básica para escribir logs en  **CloudWatch Logs**:
 
 ```bash
 aws iam attach-role-policy \
   --role-name lambda-exec-hello-world \
   --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole --profile PROFILE
+```
+
+Crear rol de ejecución usando cloudformation (opcional)
+
+```bash
+aws cloudformation deploy \
+  --stack-name lambda-demo-base \
+  --template-file stack.yml \
+  --parameter-overrides RepositoryName=lambda-demo RoleName=lambda-exec-hello-world \
+  --capabilities CAPABILITY_NAMED_IAM \
+  --profile fredwinrosales-sso
 ```
 
 (Esperar unos segundos a que el rol esté listo)

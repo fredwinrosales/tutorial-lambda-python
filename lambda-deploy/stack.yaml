@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Recursos base para Lambda demo (ECR + IAM Role)
+
+Parameters:
+  RepositoryName:
+    Type: String
+    Default: lambda-demo
+    Description: Nombre del repositorio ECR
+  RoleName:
+    Type: String
+    Default: lambda-exec-hello-world
+    Description: Nombre del rol IAM para ejecutar Lambda
+
+Resources:
+  EcrRepo:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: !Ref RepositoryName
+      ImageScanningConfiguration:
+        ScanOnPush: true
+      # Opcional: evita borrado accidental de imágenes
+      LifecyclePolicy:
+        LifecyclePolicyText: |
+          {
+            "rules": [
+              {
+                "rulePriority": 1,
+                "description": "Mantener últimas 10 imágenes",
+                "selection": {
+                  "tagStatus": "any",
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 10
+                },
+                "action": { "type": "expire" }
+              }
+            ]
+          }
+
+  LambdaExecRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref RoleName
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      # Opcional: etiquetas
+      Tags:
+        - Key: Project
+          Value: lambda-demo
+
+Outputs:
+  RepoUri:
+    Description: URI del repositorio ECR
+    Value: !Sub '${EcrRepo.RepositoryUri}'
+  RoleArn:
+    Description: ARN del rol de ejecución de Lambda
+    Value: !GetAtt LambdaExecRole.Arn
