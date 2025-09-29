@@ -42,7 +42,7 @@ Crear rol de ejecución usando cloudformation (opcional)
 ```bash
 aws cloudformation deploy \
   --stack-name lambda-demo-base \
-  --template-file stack.yml \
+  --template-file stack.yaml \
   --parameter-overrides RepositoryName=lambda-demo RoleName=lambda-exec-hello-world \
   --capabilities CAPABILITY_NAMED_IAM \
   --profile fredwinrosales-sso
